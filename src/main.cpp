@@ -70,9 +70,6 @@ void setup()
   // Setup WI-FI
   wifi_config();
 
-  // Setup system time
-  global_time_config();
-
 }
 
 void loop()
