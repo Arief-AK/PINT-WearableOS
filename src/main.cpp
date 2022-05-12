@@ -36,7 +36,7 @@ void wifi_config()
   Serial.println("WiFi connected.");
 }
 
-void global_time_config()
+void global_time_set_alarm()
 {
   // Reset the configurations
   int config_hour,config_min = 0;
