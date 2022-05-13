@@ -82,12 +82,6 @@ bool NTP_TIME::get_time()
 
             // Set flag
             interval_on = true;
-
-            std::string str = {"Interval [" + std::to_string(i) + "]"};
-
-            // Notify of interval
-            Serial.println("\n**************************************************");
-            Serial.println(str.c_str());
         }
     }
 
@@ -101,9 +95,6 @@ bool NTP_TIME::get_time()
         {
             // Set flag
             alarm_on = true;
-
-            // Notify of alarm
-            Serial.println("ALARM");
 
             // Reset array index
             m_alarms[i].hour = 0;
@@ -162,16 +153,6 @@ bool NTP_TIME::set_interval(int hour, int minutes, int seconds)
         m_last_interval_time[m_interval_index].hour = timeinfo.tm_hour;
         m_last_interval_time[m_interval_index].min = timeinfo.tm_min;
         m_last_interval_time[m_interval_index].sec = timeinfo.tm_sec;
-
-        std::string str = {"Settings for interval [" + std::to_string(m_interval_index) + "]"};
-        std::string s_hour = {"Last hour: [" + std::to_string(m_last_interval_time[m_interval_index].hour) + "]"};
-        std::string s_min = {"Last minute: [" + std::to_string(m_last_interval_time[m_interval_index].min) + "]"};
-        std::string s_sec = {"Last second: [" + std::to_string(m_last_interval_time[m_interval_index].sec) + "]"};
-
-        Serial.println("\n**************************************************");
-        Serial.println(s_hour.c_str());
-        Serial.println(s_min.c_str());
-        Serial.println(s_sec.c_str());
 
         // Increment alarm index
         m_interval_index++;
