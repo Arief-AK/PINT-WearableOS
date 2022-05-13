@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <Wire.h>
 
 #include "MAX30105.h"

@@ -1,13 +1,14 @@
 #include <WiFi.h>
-
 #include <NTP_TIME.h>
 #include <HR_SENSOR.h>
 
-std::string SSID_NAME;
-std::string SSID_PASSWORD;
+std::string SSID_NAME = "ETI1V.IC_DECO";
+std::string SSID_PASSWORD = "Superboys123";
 
 NTP_TIME GlobalTime;
-HR_SENSOR HeartSensor;
+//HR_SENSOR HeartSensor; // Uncomment if sensor is connected
+
+float BPM;
 
 // TODO: FIND CREDENTIALS FROM SERVER OR TECHNICIAN
 void request_network_credentials()
@@ -56,10 +57,15 @@ void global_time_set_alarm()
   Serial.print(config_min);
 
   // Set alarm with system time handler
-  GlobalTime.set_alarm(config_hour,config_min);
-
-  Serial.println("\nAlarm set.");
-  Serial.println("New alarm: " + String(config_hour) + ":" + String(config_min));
+  if(GlobalTime.set_alarm(config_hour,config_min))
+  {
+    Serial.println("\nAlarm set.");
+    Serial.println("New alarm: " + String(config_hour) + ":" + String(config_min));
+  }
+  else
+  {
+    Serial.println("\nUnsuccefful operation.");
+  }
 }
 
 void setup()
@@ -67,15 +73,72 @@ void setup()
   // Setup serial
   Serial.begin(115200);
 
+  // Request network credentials
+  //request_network_credentials();
+
   // Setup WI-FI
   wifi_config();
+
+  // Setup global system time
+  GlobalTime.initialise();
+
+  // **************************** DEBUGING PURPOSES **************************** //
+
+  // pins
+  pinMode(32,OUTPUT);
+
+  // set timer interval every 1 min
+  if(GlobalTime.set_interval(0,1,0)){
+    Serial.println("Attempt to set for every 1 min");
+  }
+
+  // set timer interval every 3 min
+  if(GlobalTime.set_interval(0,3,0)){
+    Serial.println("Attempt to set for every 3 min");
+  }
 
 }
 
 void loop()
 {
-  
-  // Calculate time
-  GlobalTime.calculate_difference();
+  // Retrieve current time, check if alarm or interval occurred
+  if(GlobalTime.get_time())
+  {
+    // Alarm or interval has occurred
+    if(GlobalTime.interval_on)
+    {
+      // Interval has occurred
+      GlobalTime.interval_on = false;
+
+      // TODO: PERFORM CONTINOUS GATHERING OF SENSOR DATA
+
+      // Get heart-rate (BPM)
+      //BPM = HeartSensor.get_heart_rate();
+      digitalWrite(32,HIGH);
+
+      Serial.println("LED TURNED ON");
+      delay(1000);
+      digitalWrite(32,LOW);
+      Serial.println("LED TURNED OFF");
+    }
+    else
+    {
+      // Alarm has occurred
+      GlobalTime.alarm_on = false;
+    }
+  }
+
+  // // Check if heart-rate is criticial
+  // if(!HeartSensor.is_critical())
+  // {
+  //   // Heart-rate is normal
+  //   Serial.println("BPM: ");
+  //   Serial.println(BPM);
+  // }
+  // else
+  // {
+  //   // Heart-rate is abnormal
+  //   Serial.println("SEND ALARM TO SERVER");
+  // }
   
 }

@@ -84,6 +84,7 @@ void HR_SENSOR::calculate_blood_oxygen()
 }
 
 float HR_SENSOR::get_heart_rate(){
+    calculate_heart_rate();
     return m_BMP;
 }
 
@@ -92,6 +93,7 @@ int HR_SENSOR::get_average_heart_rate(){
 }
 
 float HR_SENSOR::get_blood_oxygen(){
+    calculate_blood_oxygen();
     return m_blood_oxygen;
 }
 
