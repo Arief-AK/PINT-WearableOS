@@ -10,7 +10,6 @@ NTP_TIME GlobalTime;
 
 float BPM;
 
-// TODO: FIND CREDENTIALS FROM SERVER OR TECHNICIAN
 void request_network_credentials()
 {
   // TBA
