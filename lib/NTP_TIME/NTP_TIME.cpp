@@ -18,14 +18,14 @@ NTP_TIME::NTP_TIME()
     // Initialiase alarms
     for (int i = 0; i < PILL_SEGMENTS; i++)
     {
-        alarm_time new_alarm_time{0,0};
+        alarm_time new_alarm_time{-1,-1};
         m_alarms[i] = new_alarm_time;
     }
 
     // Initialise interval alarms
     for (int i = 0; i < SENSOR_COUNT; i++)
     {
-        interval_time new_interval{0,0,0};
+        interval_time new_interval{-1,-1,-1};
         m_intervals[i] = new_interval;
         m_last_interval_time[i] = new_interval;
     }
@@ -90,8 +90,6 @@ bool NTP_TIME::get_time()
             Serial.println(str.c_str());
         }
     }
-
-    //Serial.println("Finished A");   
 
     // Traverse through alarms
     for (int i = 0; i < PILL_SEGMENTS; i++)

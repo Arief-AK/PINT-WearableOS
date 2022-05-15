@@ -12,6 +12,9 @@ class HR_SENSOR
         HR_SENSOR();
         ~HR_SENSOR();
 
+        void initialise(MAX30105 particleSensor);
+        void calculate_heart_rate();
+        
         float get_heart_rate();
         float get_blood_oxygen();
 
@@ -22,7 +25,6 @@ class HR_SENSOR
 
     private:
 
-        void calculate_heart_rate();
         void calculate_blood_oxygen();
 
         MAX30105 m_particleSensor;
@@ -31,7 +33,7 @@ class HR_SENSOR
         byte rateSpot = 0;
         long lastBeat = 0;          //Time at which the last beat occurred
 
-        float m_BMP;
+        float m_BPM;
         float m_blood_oxygen;
 
         int m_average_BPM;

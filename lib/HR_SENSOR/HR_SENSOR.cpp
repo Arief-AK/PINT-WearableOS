@@ -2,11 +2,21 @@
 
 HR_SENSOR::HR_SENSOR()
 {
-    m_BMP = 0.00f;
+    m_BPM = 0.00f;
     m_average_BPM = 0;
 
     m_blood_oxygen = 0.00f;
     m_average_blood_oxygen = 0;
+}
+
+HR_SENSOR::~HR_SENSOR()
+{
+    delete this;
+}
+
+void HR_SENSOR::initialise(MAX30105 particleSensor)
+{
+    m_particleSensor = particleSensor;
 
     // Initialize sensor
     if (!m_particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
@@ -28,11 +38,6 @@ HR_SENSOR::HR_SENSOR()
     m_particleSensor.setPulseAmplitudeGreen(0);
 }
 
-HR_SENSOR::~HR_SENSOR()
-{
-    delete this;
-}
-
 // TODO: Check if sensor values are within threshold
 bool HR_SENSOR::is_critical()
 {
@@ -52,13 +57,13 @@ void HR_SENSOR::calculate_heart_rate()
         lastBeat = millis();
 
         // Calculate beats per minute
-        m_BMP = 60 / (delta / 1000.0);
+        m_BPM = 60 / (delta / 1000.0);
 
         // Check if BPM is reliable
-        if (m_BMP < 255 && m_BMP > 20)
+        if (m_BPM < 255 && m_BPM > 20)
         {
             //Store this reading in the array
-            rates[rateSpot++] = (byte)m_BMP;
+            rates[rateSpot++] = (byte)m_BPM;
             
             // Wrap variable
             rateSpot %= RATE_SIZE;
@@ -84,8 +89,7 @@ void HR_SENSOR::calculate_blood_oxygen()
 }
 
 float HR_SENSOR::get_heart_rate(){
-    calculate_heart_rate();
-    return m_BMP;
+    return m_BPM;
 }
 
 int HR_SENSOR::get_average_heart_rate(){
