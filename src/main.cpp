@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <NTP_TIME.h>
 #include <HR_SENSOR.h>
+#include <GOOGLE_HOME.h>
 
 // DEFINITIONS
 #define PATIENT_AGE 60
@@ -9,6 +10,7 @@
 
 // Needs this dependancy for full functionality
 MAX30105 particleSensor;
+GoogleHomeNotifier notifier;
 
 // System flow objects
 NTP_TIME GlobalTime;
@@ -17,6 +19,7 @@ NTP_TIME GlobalTime;
 HR_SENSOR HeartSensor;
 
 // External dependencies
+GOOGLE_HOME GHome;
 
 // Global variables
 std::string SSID_NAME = "ETI1V.IC_DECO";
@@ -97,11 +100,14 @@ void setup()
   // Setup WI-FI
   wifi_config();
 
+  // Setup global system time
+  GlobalTime.initialise();
+
   // Setup heart-beat sensor
   HeartSensor.initialise(particleSensor, PATIENT_AGE);
 
-  // Setup global system time
-  GlobalTime.initialise();
+  // Setup external google home device
+  GHome.initialise("Google Nest", notifier);
 
   // **************************** DEBUGING PURPOSES **************************** //
 
