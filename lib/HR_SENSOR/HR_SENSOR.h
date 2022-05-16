@@ -4,6 +4,8 @@
 #include "heartRate.h"
 
 #define RATE_SIZE 4
+#define RELIABLE_MAX_THRESHOLD 200
+#define RELIABLE_MIN_THRESHOLD 60
 
 class HR_SENSOR
 {
@@ -12,7 +14,7 @@ class HR_SENSOR
         HR_SENSOR();
         ~HR_SENSOR();
 
-        void initialise(MAX30105 particleSensor);
+        void initialise(MAX30105 particleSensor, int age);
         void calculate_heart_rate();
         
         float get_heart_rate();
@@ -36,6 +38,7 @@ class HR_SENSOR
         float m_BPM;
         float m_blood_oxygen;
 
+        int m_patient_age;
         int m_average_BPM;
         int m_average_blood_oxygen;
 

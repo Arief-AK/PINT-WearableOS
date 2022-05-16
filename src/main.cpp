@@ -1,17 +1,31 @@
+// INCLUDES
 #include <WiFi.h>
 #include <NTP_TIME.h>
 #include <HR_SENSOR.h>
 
-std::string SSID_NAME = "ETI1V.IC_DECO";
-std::string SSID_PASSWORD = "Superboys123";
+// DEFINITIONS
+#define PATIENT_AGE 60
+#define BPM_ABNORMAL_THRESHOLD 3
 
 // Needs this dependancy for full functionality
 MAX30105 particleSensor;
 
+// System flow objects
 NTP_TIME GlobalTime;
-HR_SENSOR HeartSensor; // Uncomment if sensor is connected
 
-float BPM;
+// Device Peripherals
+HR_SENSOR HeartSensor;
+
+// External dependencies
+
+// Global variables
+std::string SSID_NAME = "ETI1V.IC_DECO";
+std::string SSID_PASSWORD = "Superboys123";
+
+float BPM = 0.0f;
+int BPM_abnormal_count = 0;
+
+// **************************** SETUP FUNCTIONS **************************** //
 
 void request_network_credentials()
 {
@@ -70,6 +84,8 @@ void global_time_set_alarm()
   }
 }
 
+// **************************** SYSTEM SETUP FUNCTION **************************** //
+
 void setup()
 {
   // Setup serial
@@ -82,7 +98,7 @@ void setup()
   wifi_config();
 
   // Setup heart-beat sensor
-  HeartSensor.initialise(particleSensor);
+  HeartSensor.initialise(particleSensor, PATIENT_AGE);
 
   // Setup global system time
   GlobalTime.initialise();
@@ -98,10 +114,10 @@ void setup()
   }
 }
 
+// **************************** SYSTEM MAIN LOOP **************************** //
+
 void loop()
 {
-  // TODO: PERFORM CONTINOUS GATHERING OF SENSOR DATA
-
   // Retrieve heartbeat sensor data
   HeartSensor.calculate_heart_rate();
 
@@ -133,7 +149,8 @@ void loop()
       else
       {
         // Heart-rate is abnormal
-        Serial.println("SEND ALARM TO SERVER");
+        Serial.println("Abnormal count increase");
+        BPM_abnormal_count++;
       }
     }
     else
@@ -141,5 +158,15 @@ void loop()
       // Alarm has occurred
       GlobalTime.alarm_on = false;
     }
+  }
+
+  // Check if the heart-rate has been abnormal consecutively
+  if(BPM_abnormal_count == BPM_ABNORMAL_THRESHOLD)
+  {
+    // Heart-beat is critical
+    Serial.println("HEART-RATE CRITICAL, SEND ALARM TO SERVER");
+    
+    // Reset count
+    BPM_abnormal_count = 0;
   }
 }

@@ -5,6 +5,7 @@ HR_SENSOR::HR_SENSOR()
     m_BPM = 0.00f;
     m_average_BPM = 0;
 
+    m_patient_age = 0;
     m_blood_oxygen = 0.00f;
     m_average_blood_oxygen = 0;
 }
@@ -14,8 +15,9 @@ HR_SENSOR::~HR_SENSOR()
     delete this;
 }
 
-void HR_SENSOR::initialise(MAX30105 particleSensor)
+void HR_SENSOR::initialise(MAX30105 particleSensor, int age)
 {
+    m_patient_age = age;
     m_particleSensor = particleSensor;
 
     // Initialize sensor
@@ -38,11 +40,22 @@ void HR_SENSOR::initialise(MAX30105 particleSensor)
     m_particleSensor.setPulseAmplitudeGreen(0);
 }
 
-// TODO: Check if sensor values are within threshold
 bool HR_SENSOR::is_critical()
 {
-    // TBA
-    return false;
+    // Calculate maximum heart-rate in reference to patient age
+    int max_heart_rate = 220 - m_patient_age;
+
+    // Compare to current BPM
+    if(m_BPM > max_heart_rate || m_BPM < RELIABLE_MIN_THRESHOLD)
+    {
+        // State is critical
+        return true;
+    }
+    else
+    {
+        // State is normal
+        return false;
+    }
 }
 
 void HR_SENSOR::calculate_heart_rate()
@@ -60,7 +73,7 @@ void HR_SENSOR::calculate_heart_rate()
         m_BPM = 60 / (delta / 1000.0);
 
         // Check if BPM is reliable
-        if (m_BPM < 255 && m_BPM > 20)
+        if (m_BPM < RELIABLE_MAX_THRESHOLD && m_BPM > RELIABLE_MIN_THRESHOLD)
         {
             //Store this reading in the array
             rates[rateSpot++] = (byte)m_BPM;
