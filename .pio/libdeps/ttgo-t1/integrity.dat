@@ -1,5 +1,8 @@
-sparkfun/SparkFun MAX3010x Pulse and Proximity Sensor Library@^1.1.1
 bblanchon/ArduinoJson@^6.19.3
+sparkfun/SparkFun MAX3010x Pulse and Proximity Sensor Library@^1.1.1
 sinricpro/SinricPro@^2.9.17
 links2004/WebSockets@^2.3.6
 horihiro/esp8266-google-home-notifier@^1.0.8
+adafruit/Adafruit GFX Library@^1.11.1
+adafruit/Adafruit SH110X@^2.1.6
+adafruit/Adafruit SSD1306@^2.5.3

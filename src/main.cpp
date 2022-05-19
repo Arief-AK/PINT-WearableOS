@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <NTP_TIME.h>
 #include <HR_SENSOR.h>
+#include <OLED_DISPLAY.h>
 #include <GOOGLE_HOME.h>
 
 // DEFINITIONS
@@ -17,6 +18,7 @@ NTP_TIME GlobalTime;
 
 // Device Peripherals
 HR_SENSOR HeartSensor;
+OLED_DISPLAY Display;
 
 // External dependencies
 GOOGLE_HOME GHome;
@@ -108,6 +110,9 @@ void setup()
 
   // Setup external google home device
   GHome.initialise("Google Nest", notifier);
+
+  // Setup OLED LCD display
+  Display.display_setup();
 
   // **************************** DEBUGING PURPOSES **************************** //
 
