@@ -35,6 +35,8 @@ class NTP_TIME
         bool alarm_on;
         bool interval_on;
 
+        std::string current_time_string;
+
     private:
 
         void obtain_time();

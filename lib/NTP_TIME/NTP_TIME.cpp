@@ -11,6 +11,7 @@ NTP_TIME::NTP_TIME()
     m_daylight_offset = 7200;
     m_gmt_offset = 2;
     m_ntp_server = "time.google.com";
+    current_time_string = "00:00:00";
 
     m_alarm_index = 0;
     m_interval_index = 0;
@@ -57,7 +58,23 @@ void NTP_TIME::obtain_time()
         }
         else
         {
-        time_present = true;
+            time_present = true;
+
+            // Format string for 24:00 time format
+            std::string hours = std::to_string(timeinfo.tm_hour);
+            std::string minutes = std::to_string(timeinfo.tm_min);
+
+            if(hours.length() != 2)
+            {
+                hours = "0" + hours;
+            }
+
+            if(minutes.length() != 2)
+            {
+                minutes = "0" + minutes;
+            }
+            
+            current_time_string = hours + ":" + minutes;
         }  
     }
 }

@@ -5,13 +5,16 @@
 #include <OLED_DISPLAY.h>
 #include <GOOGLE_HOME.h>
 
+#include <sstream>
+#include <iomanip>
+
 // DEFINITIONS
 #define PATIENT_AGE 60
 #define BPM_ABNORMAL_THRESHOLD 3
 
 // Needs this dependancy for full functionality
 MAX30105 particleSensor;
-GoogleHomeNotifier notifier;
+// GoogleHomeNotifier notifier;
 
 // System flow objects
 NTP_TIME GlobalTime;
@@ -24,11 +27,12 @@ OLED_DISPLAY Display;
 GOOGLE_HOME GHome;
 
 // Global variables
-std::string SSID_NAME = "ETI1V.IC_DECO";
-std::string SSID_PASSWORD = "Superboys123";
+std::string SSID_NAME = "Arief-WIFI";
+std::string SSID_PASSWORD = "helohelo";
 
 float BPM = 0.0f;
 int BPM_abnormal_count = 0;
+bool setup_complete = false;
 
 // **************************** SETUP FUNCTIONS **************************** //
 
@@ -89,6 +93,15 @@ void global_time_set_alarm()
   }
 }
 
+std::string format_BPM()
+{
+  std::stringstream ss;
+  ss << std::fixed << std::setprecision(2) << BPM;
+  std::string BPM_message = "BPM:" + ss.str();
+
+  return BPM_message;
+}
+
 // **************************** SYSTEM SETUP FUNCTION **************************** //
 
 void setup()
@@ -109,7 +122,7 @@ void setup()
   HeartSensor.initialise(particleSensor, PATIENT_AGE);
 
   // Setup external google home device
-  GHome.initialise("Google Nest", notifier);
+  // GHome.initialise("Google Nest", notifier);
 
   // Setup OLED LCD display
   Display.display_setup();
@@ -150,17 +163,35 @@ void loop()
       digitalWrite(32,LOW);
       Serial.println("LED TURNED OFF");
 
+      // Show the time on OLED
+      Display.print(GlobalTime.current_time_string, 92, 0, true);
+
       // Check if heart-rate is criticial
       if(!HeartSensor.is_critical())
       {
         // Heart-rate is normal
         Serial.println("BPM: ");
         Serial.println(BPM);
+        
+        // Display the BPM
+        Display.print("3", 0, 24, false);
+        Display.print(format_BPM(), 8, 24, false);
       }
       else
       {
+        // Heart-rate is ab-normal
+        Serial.println("BPM: ");
+        Serial.println(BPM);
+
         // Heart-rate is abnormal
         Serial.println("Abnormal count increase");
+
+        // Print BPM and message
+        Display.print("3", 0, 24, false);
+        Display.print(format_BPM(), 8, 24, false);
+        Display.print("Abnormal heart-rate!", 0, 32, false);
+
+        // Perform housekeeping
         BPM_abnormal_count++;
       }
     }
@@ -170,12 +201,29 @@ void loop()
       GlobalTime.alarm_on = false;
     }
   }
+  else
+  {
+      if(!setup_complete)
+      {
+          // Show the time on OLED
+          Display.print(GlobalTime.current_time_string, 92, 0, true);
+          setup_complete = true;
+      }
+      else
+      {
+        // Show the time on OLED
+          Display.print(GlobalTime.current_time_string, 92, 0, false);
+      }
+  }
 
   // Check if the heart-rate has been abnormal consecutively
   if(BPM_abnormal_count == BPM_ABNORMAL_THRESHOLD)
   {
     // Heart-beat is critical
     Serial.println("HEART-RATE CRITICAL, SEND ALARM TO SERVER");
+
+    // Print message
+    Display.print("HEART-RATE CRITICAL, SEND ALARM TO SERVER", 0, 40, false);
     
     // Reset count
     BPM_abnormal_count = 0;
