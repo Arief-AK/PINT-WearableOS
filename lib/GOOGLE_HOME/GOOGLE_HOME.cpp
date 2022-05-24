@@ -38,7 +38,7 @@ void GOOGLE_HOME::initialise(std::string device_name, GoogleHomeNotifier notifie
     Serial.print("found Google Home device.");
 
     // Provide audio response from google home device
-    m_notifier.notify("Google home device connected.");
+    m_notifier.notify("Hello, google home device is connected.");
 }
 
 void GOOGLE_HOME::dispatch(std::string message)

@@ -192,7 +192,7 @@
  C:/Users/Arief/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal.h \
  .pio/libdeps/ttgo-t1/SparkFun\ MAX3010x\ Pulse\ and\ Proximity\ Sensor\ Library/src/MAX30105.h \
  .pio/libdeps/ttgo-t1/SparkFun\ MAX3010x\ Pulse\ and\ Proximity\ Sensor\ Library/src/heartRate.h \
- lib/OLED_DISPLAY/OLED_DISPLAY.h \
+ lib/GYRO_SENSOR/GYRO_SENSOR.h lib/OLED_DISPLAY/OLED_DISPLAY.h \
  C:/Users/Arief/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
  C:/Users/Arief/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
  .pio/libdeps/ttgo-t1/Adafruit\ GFX\ Library/Adafruit_GFX.h \

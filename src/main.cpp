@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <NTP_TIME.h>
 #include <HR_SENSOR.h>
+#include <GYRO_SENSOR.h>
 #include <OLED_DISPLAY.h>
 #include <GOOGLE_HOME.h>
 
@@ -21,14 +22,16 @@ NTP_TIME GlobalTime;
 
 // Device Peripherals
 HR_SENSOR HeartSensor;
+GYRO_SENSOR GyroSensor;
 OLED_DISPLAY Display;
 
 // External dependencies
 GOOGLE_HOME GHome;
 
 // Global variables
-std::string SSID_NAME = "Arief-WIFI";
-std::string SSID_PASSWORD = "helohelo";
+std::string SSID_NAME = "ETI1V.IC_DECO";
+std::string SSID_PASSWORD = "Superboys123";
+std::string welcome_message = "Hello, Gertrude";
 
 float BPM = 0.0f;
 int BPM_abnormal_count = 0;
@@ -121,11 +124,17 @@ void setup()
   // Setup heart-beat sensor
   HeartSensor.initialise(particleSensor, PATIENT_AGE);
 
+  // Setup gyro-accelerometer
+  GyroSensor.initialise();
+
   // Setup external google home device
   // GHome.initialise("Google Nest", notifier);
 
   // Setup OLED LCD display
   Display.display_setup();
+
+  Display.print(welcome_message,0,24,true);
+  delay(500);
 
   // **************************** DEBUGING PURPOSES **************************** //
 
@@ -138,9 +147,9 @@ void setup()
   }
 }
 
-// **************************** SYSTEM MAIN LOOP **************************** //
+// **************************** SENSOR OPERATING FUNCTIONS **************************** //
 
-void loop()
+void handle_heart_rate()
 {
   // Retrieve heartbeat sensor data
   HeartSensor.calculate_heart_rate();
@@ -223,9 +232,37 @@ void loop()
     Serial.println("HEART-RATE CRITICAL, SEND ALARM TO SERVER");
 
     // Print message
-    Display.print("HEART-RATE CRITICAL, SEND ALARM TO SERVER", 0, 40, false);
+    Display.print("HEART-RATE CRITICAL!", 0, 40, false);
     
     // Reset count
     BPM_abnormal_count = 0;
   }
+
+}
+
+void handle_fall_detection()
+{
+  // Retrieve gyro-accelerometer sensor data
+  if(GyroSensor.fall_detected())
+  {
+    // Notify patient fell
+    Serial.println("FALL DETECTED");
+
+    // Show the time on OLED
+    Display.print(GlobalTime.current_time_string, 92, 0, true);
+    
+    // Notify on LCD
+    Display.print("FALL DETECTED", 0, 24, false);
+  }
+}
+
+// **************************** SYSTEM MAIN LOOP **************************** //
+
+void loop()
+{
+    // Perform fall detection
+    handle_fall_detection();
+
+    // Check patient heart-rate
+    handle_heart_rate();
 }

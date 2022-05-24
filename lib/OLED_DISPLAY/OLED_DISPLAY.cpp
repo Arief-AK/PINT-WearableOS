@@ -42,6 +42,7 @@ void OLED_DISPLAY::display_setup()
     // Show complete initialisation
     m_display.clearDisplay();
     m_display.setCursor(0,24);
+    
     m_display.print("Initialised");
     m_display.display();
 }
