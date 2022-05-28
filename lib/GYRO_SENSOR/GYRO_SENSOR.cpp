@@ -77,9 +77,6 @@ bool GYRO_SENSOR::operate()
     {
         //if AM breaks lower threshold (0.4g)
         m_trig1=true;
-
-        Serial.println("TRIGGER 1 ACTIVATED");
-    
     }
     if (m_trig1 == true)
     {
@@ -90,16 +87,12 @@ bool GYRO_SENSOR::operate()
             m_trig2=true;
             m_trig1=false;
             m_trig1_count=0;
-
-            Serial.println("TRIGGER 2 ACTIVATED");
         }
     }
     if (m_trig2 == true)
     {
         m_trig2_count++;
         m_angle_change = pow(pow(m_gyroscope.res_x,2)+pow(m_gyroscope.res_y,2)+pow(m_gyroscope.res_z,2),0.5);
-        
-        Serial.println(m_angle_change);
 
         if (m_angle_change >= 30 && m_angle_change <= 400)
         { 
@@ -107,9 +100,6 @@ bool GYRO_SENSOR::operate()
             m_trig3=true;
             m_trig2=false;
             m_trig2_count=0;
-
-            Serial.println(m_angle_change);
-            Serial.println("TRIGGER 3 ACTIVATED");
         }
     }
     if (m_trig3 == true)
@@ -119,9 +109,6 @@ bool GYRO_SENSOR::operate()
         if (m_trig3_count >= 10)
         { 
             m_angle_change = pow(pow(m_gyroscope.res_x,2)+pow(m_gyroscope.res_y,2)+pow(m_gyroscope.res_z,2),0.5);
-            //delay(10);
-            
-            Serial.println("THIS IS HERE: " + m_angle_change);
 
             if ((m_angle_change>=0) && (m_angle_change<=40))
             { 
@@ -129,16 +116,12 @@ bool GYRO_SENSOR::operate()
                 fall=true;
                 m_trig3=false;
                 m_trig3_count=0;
-
-                Serial.println(m_angle_change);
             }
             else
             { 
                 //user regained normal orientation
                 m_trig3=false;
                 m_trig3_count=0;
-                
-                Serial.println("TRIGGER 3 DEACTIVATED");
             }
         }
     }
@@ -148,8 +131,6 @@ bool GYRO_SENSOR::operate()
         //allow 0.5s for orientation change
         m_trig2=false;
         m_trig2_count=0;
-        
-        //Serial.println("TRIGGER 2 DECACTIVATED");
     }
 
     if (m_trig1_count >= 6)
@@ -157,12 +138,7 @@ bool GYRO_SENSOR::operate()
         //allow 0.5s for AM to break upper threshold
         m_trig1=false;
         m_trig1_count=0;
-        
-        //Serial.println("TRIGGER 1 DECACTIVATED");
     }
-
-    // Provide a delay for processing
-    delay(100);
 
     // Return falling flag
     return fall;

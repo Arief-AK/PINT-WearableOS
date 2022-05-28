@@ -6,11 +6,12 @@
 #include <OLED_DISPLAY.h>
 #include <GOOGLE_HOME.h>
 
+// For BPM formatting
 #include <sstream>
 #include <iomanip>
 
 // DEFINITIONS
-#define PATIENT_AGE 60
+#define PATIENT_AGE 20
 #define BPM_ABNORMAL_THRESHOLD 3
 
 // Needs this dependancy for full functionality
@@ -29,8 +30,8 @@ OLED_DISPLAY Display;
 GOOGLE_HOME GHome;
 
 // Global variables
-std::string SSID_NAME = "ETI1V.IC_DECO";
-std::string SSID_PASSWORD = "Superboys123";
+std::string SSID_NAME = "Arief-WIFI";
+std::string SSID_PASSWORD = "helohelo";
 std::string welcome_message = "Hello, Gertrude";
 
 float BPM = 0.0f;
@@ -141,9 +142,9 @@ void setup()
   // pins
   pinMode(32,OUTPUT);
 
-  // set timer interval every 1 min
+  // set timer interval every half min
   if(GlobalTime.set_interval(0,1,0)){
-    Serial.println("Attempt to set for every 1 min");
+    Serial.println("Attempt to set for every half minute");
   }
 }
 
@@ -188,7 +189,7 @@ void handle_heart_rate()
       }
       else
       {
-        // Heart-rate is ab-normal
+        // Heart-rate is abnormal
         Serial.println("BPM: ");
         Serial.println(BPM);
 
@@ -260,9 +261,9 @@ void handle_fall_detection()
 
 void loop()
 {
-    // Perform fall detection
-    handle_fall_detection();
-
     // Check patient heart-rate
     handle_heart_rate();
+
+    // Perform fall detection
+    handle_fall_detection();
 }
