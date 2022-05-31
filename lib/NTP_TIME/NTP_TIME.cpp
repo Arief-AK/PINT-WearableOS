@@ -84,46 +84,57 @@ bool NTP_TIME::get_time()
     // Get current time
     obtain_time();
 
-    // Traverse through intervals
-    for (int i = 0; i < SENSOR_COUNT; i++)
+    // Check if intervals are set
+    if(m_interval_set)
     {
-        // Current time - set_interval_time = last interval time
-        if(timeinfo.tm_hour - m_intervals[i].hour == m_last_interval_time[i].hour
-        && timeinfo.tm_min - m_intervals[i].min == m_last_interval_time[i].min
-        && timeinfo.tm_sec - m_intervals[i].sec == m_last_interval_time[i].sec)
+        // Traverse through intervals
+        for (int i = 0; i < SENSOR_COUNT; i++)
         {
-            // Store current time information for timing calculation reference
-            m_last_interval_time[i].hour = timeinfo.tm_hour;
-            m_last_interval_time[i].min = timeinfo.tm_min;
-            m_last_interval_time[i].sec = timeinfo.tm_sec;
+            // Current time - set_interval_time = last interval time
+            if(timeinfo.tm_hour - m_intervals[i].hour == m_last_interval_time[i].hour
+            && timeinfo.tm_min - m_intervals[i].min == m_last_interval_time[i].min
+            && timeinfo.tm_sec - m_intervals[i].sec == 0)
+            {
+                // Store current time information for timing calculation reference
+                m_last_interval_time[i].hour = timeinfo.tm_hour;
+                m_last_interval_time[i].min = timeinfo.tm_min;
+                m_last_interval_time[i].sec = timeinfo.tm_sec;
 
-            // Set flag
-            interval_on = true;
+                // Set flag
+                interval_on = true;
 
-            std::string str = {"Interval [" + std::to_string(i) + "]"};
+                std::string str = {"Interval [" + std::to_string(i) + "]"};
+                std::string time_str = std::to_string(timeinfo.tm_hour) + ":" + std::to_string(timeinfo.tm_min) + ":" + std::to_string(timeinfo.tm_sec);
 
-            // Notify of interval
-            Serial.println("\n**************************************************");
-            Serial.println(str.c_str());
+                // Notify of interval
+                Serial.println("\n**************************************************");
+                Serial.println(str.c_str());
+                Serial.println("Time:");
+                Serial.print(time_str.c_str());
+            }
         }
     }
 
-    // Traverse through alarms
-    for (int i = 0; i < PILL_SEGMENTS; i++)
+    // Check if alarms are set
+    if(m_alarm_set)
     {
-        // Check if time is alarm time
-        if(timeinfo.tm_hour == m_alarms[i].hour && timeinfo.tm_min == m_alarms[i].min)
+        // Traverse through alarms
+        for (int i = 0; i < PILL_SEGMENTS; i++)
         {
-            // Set flag
-            alarm_on = true;
+            // Check if time is alarm time
+            if(timeinfo.tm_hour == m_alarms[i].hour && timeinfo.tm_min == m_alarms[i].min)
+            {
+                // Set flag
+                alarm_on = true;
 
-            // Notify of alarm
-            Serial.println("ALARM");
+                // Notify of alarm
+                Serial.println("ALARM");
 
-            // Reset array index
-            m_alarms[i].hour = 0;
-            m_alarms[i].min = 0;
-        }   
+                // Reset array index
+                m_alarms[i].hour = 0;
+                m_alarms[i].min = 0;
+            }   
+        }
     }
 
     // Check for interval or alarm
@@ -148,6 +159,9 @@ bool NTP_TIME::set_alarm(int hour, int minutes)
 
         // Store alarm in next free alarm index
         m_alarms[m_alarm_index] = new_alarm;
+
+        // Set flag
+        m_alarm_set = true;
 
         // Increment alarm index
         m_alarm_index++;

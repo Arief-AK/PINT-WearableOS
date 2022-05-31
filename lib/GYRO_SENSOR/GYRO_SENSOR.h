@@ -31,6 +31,8 @@ class GYRO_SENSOR
         ~GYRO_SENSOR();
 
         void initialise();
+        void calibrate();
+
         bool fall_detected();
 
     private:

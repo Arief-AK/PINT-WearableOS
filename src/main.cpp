@@ -1,6 +1,7 @@
 // INCLUDES
 #include <WiFi.h>
 #include <NTP_TIME.h>
+#include <DAHA_HANDLER.h>
 #include <HR_SENSOR.h>
 #include <GYRO_SENSOR.h>
 #include <OLED_DISPLAY.h>
@@ -144,7 +145,7 @@ void setup()
 
   // set timer interval every half min
   if(GlobalTime.set_interval(0,1,0)){
-    Serial.println("Attempt to set for every half minute");
+    Serial.println("Attempt to set interval for every minute");
   }
 }
 
@@ -166,8 +167,8 @@ void handle_heart_rate()
 
       // Get heart-rate (BPM)
       BPM = HeartSensor.get_heart_rate();
-      digitalWrite(32,HIGH);
 
+      digitalWrite(32,HIGH);
       Serial.println("LED TURNED ON");
       delay(1000);
       digitalWrite(32,LOW);
@@ -215,6 +216,10 @@ void handle_heart_rate()
   {
       if(!setup_complete)
       {
+          // On first-boot
+          Display.print("Startup complete",0,24,true);
+          delay(150);
+
           // Show the time on OLED
           Display.print(GlobalTime.current_time_string, 92, 0, true);
           setup_complete = true;
@@ -222,7 +227,7 @@ void handle_heart_rate()
       else
       {
         // Show the time on OLED
-          Display.print(GlobalTime.current_time_string, 92, 0, false);
+        Display.print(GlobalTime.current_time_string, 92, 0, false);
       }
   }
 
@@ -257,6 +262,11 @@ void handle_fall_detection()
   }
 }
 
+void handle_data()
+{
+  // TBA
+}
+
 // **************************** SYSTEM MAIN LOOP **************************** //
 
 void loop()
@@ -266,4 +276,7 @@ void loop()
 
     // Perform fall detection
     handle_fall_detection();
+
+    // Perform all necessary data operations
+    handle_data();
 }

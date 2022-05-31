@@ -19,9 +19,9 @@ OLED_DISPLAY::~OLED_DISPLAY()
 void OLED_DISPLAY::display_setup()
 {
     // Setup I2C connection
-    //m_display.begin(i2c_Address, true); // Uncomment for other OLED LCD
+    m_display.begin(i2c_Address, true); // Uncomment for other OLED LCD
 
-    m_display.begin(SSD1306_SWITCHCAPVCC,0x3C); // Uncomment for Adafruit OLED LCD
+    //m_display.begin(SSD1306_SWITCHCAPVCC,0x3C); // Uncomment for Adafruit OLED LCD
     m_display.clearDisplay();
 
     // Set cursor to default position
