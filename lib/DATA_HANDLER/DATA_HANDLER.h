@@ -16,16 +16,16 @@
 #define UPCOMING_ALERT_THRESHOLD 4
 
 // API ENDPOINTS
-#define ENDPOINT_LOGIN "https://cyberca.re/api/login"
-#define ENDPOINT_VALIDATE "https://cyberca.re/api/validate"
-#define ENDPOINT_SCHEDULE "https://cyberca.re/api/schedule/list"
-#define ENDPOINT_NEW_ALERT "https://cyberca.re/api/schedule/newItem"
-#define ENDPOINT_SENSOR_UPDATE "https://cyberca.re/api/sensors/update"
-#define ENDPOINT_SPECIFIC_ALERT_ID "https://cyberca.re/api/schedule/alert"
-#define ENDPOINT_DISMISS_ITEM "https://cyberca.re/api/schedule/dismissItem"
-#define ENDPOINT_DELETE_ALERT "https://cyberca.re/api/schedule/deleteItem"
-#define ENDPOINT_SEND_MESSAGE "https://cyberca.re/api/chat/sendMessage"
-#define ENDPOINT_GET_MESSAGES "https://cyberca.re/api/chat/getMessages"
+#define ENDPOINT_LOGIN "http://cyberca.re/api/login"
+#define ENDPOINT_VALIDATE "http://cyberca.re/api/validate"
+#define ENDPOINT_SCHEDULE "http://cyberca.re/api/schedule/list"
+#define ENDPOINT_NEW_ALERT "http://cyberca.re/api/schedule/newItem"
+#define ENDPOINT_SENSOR_UPDATE "http://cyberca.re/api/sensors/update"
+#define ENDPOINT_SPECIFIC_ALERT_ID "http://cyberca.re/api/schedule/alert"
+#define ENDPOINT_DISMISS_ITEM "http://cyberca.re/api/schedule/dismissItem"
+#define ENDPOINT_DELETE_ALERT "http://cyberca.re/api/schedule/deleteItem"
+#define ENDPOINT_SEND_MESSAGE "http://cyberca.re/api/chat/sendMessage"
+#define ENDPOINT_GET_MESSAGES "http://cyberca.re/api/chat/getMessages"
 
 struct alert
 {

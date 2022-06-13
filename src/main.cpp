@@ -164,7 +164,7 @@ void send_data_batch()
   Serial.print(response);
 
   // Send every minute
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
+  vTaskDelay(60000 / portTICK_PERIOD_MS);
 }
 
 void retrieve_operation()
@@ -324,7 +324,8 @@ void display_features()
       vTaskDelay(5000 / portTICK_PERIOD_MS);
     }
 
-    vTaskDelay(500 / portTICK_PERIOD_MS);
+    // Delay to see
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
   }
 }
 
@@ -400,9 +401,9 @@ void setup()
   delay(500);
 
   // Assign tasks for core [0]
-  xTaskCreatePinnedToCore(handle_data_core_0_API,"handle_data_core_0_API",105000,NULL,5,&API_TASK,0);
-  xTaskCreatePinnedToCore(handle_data_core_0_sensors,"handle_data_core_0_sensors",10000,NULL,8,&DATA_TASK,0);
-  xTaskCreatePinnedToCore(handle_data_core_0_batch,"handle_data_core_0_batch",10000,NULL,5,&BATCH_TASK,0);
+  xTaskCreatePinnedToCore(handle_data_core_0_API,"handle_data_core_0_API",50000,NULL,5,&API_TASK,0);
+  xTaskCreatePinnedToCore(handle_data_core_0_sensors,"handle_data_core_0_sensors",10000,NULL,5,&DATA_TASK,0);
+  //xTaskCreatePinnedToCore(handle_data_core_0_batch,"handle_data_core_0_batch",10000,NULL,5,&BATCH_TASK,0);
   
   // Assign tasks for core [1]
   xTaskCreatePinnedToCore(handle_data_core_1_threshold,"handle_data_core_1_threshold",10000,NULL,5,&THRESHOLD_TASK,1);
@@ -413,4 +414,6 @@ void setup()
 // **************************** SYSTEM MAIN LOOP **************************** //
 
 void loop()
-{}
+{
+  //send_data_batch();
+}
