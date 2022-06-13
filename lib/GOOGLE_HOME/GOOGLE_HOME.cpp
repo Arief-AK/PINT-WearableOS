@@ -11,8 +11,10 @@ GOOGLE_HOME::~GOOGLE_HOME()
     delete this;
 }
 
-void GOOGLE_HOME::initialise(std::string device_name, GoogleHomeNotifier notifier)
+void GOOGLE_HOME::initialise(std::string device_name)
 {
+    GoogleHomeNotifier notifier;
+
     // Assign member variables
     m_device_name = device_name;
     m_notifier = notifier;

@@ -7,7 +7,7 @@ class GOOGLE_HOME
         GOOGLE_HOME();
         ~GOOGLE_HOME();
 
-        void initialise(std::string device_name, GoogleHomeNotifier notifier);
+        void initialise(std::string device_name);
         void dispatch(std::string message);
 
         bool is_connected();
