@@ -19,6 +19,7 @@ TaskHandle_t API_TASK;
 TaskHandle_t DATA_TASK;
 TaskHandle_t THRESHOLD_TASK;
 TaskHandle_t DISPLAY_TASK;
+TaskHandle_t BATCH_TASK;
 
 // Needs this dependancy for full functionality
 MAX30105 particleSensor;
@@ -42,6 +43,9 @@ const int button_1 = 15;
 // Global variables
 std::string SSID_NAME = "ETI1V.IC_DECO";
 std::string SSID_PASSWORD = "Superboys123";
+
+std::vector<float> BPMs;
+std::vector<int> timestamps;
 
 float BPM = 0.0f;
 float prev_BPM = 0.0f;
@@ -106,6 +110,10 @@ void GetSensors()
     if(BPM != prev_BPM)
     {
       prev_BPM = BPM;
+      BPMs.push_back(prev_BPM);
+
+      auto current_time = DHandler.calculate_current_time();
+      timestamps.push_back(current_time);
     }
 
     // Check if heart-rate is criticial
@@ -141,39 +149,23 @@ void GetSensors()
       Serial.print("\nSend message response code:");
       Serial.print(send_message_response);
     }
-
-    // Check for button press
-  //   if(digitalRead(button_0) == HIGH)
-  //   {
-  //     // Send critical message
-  //     std::string critical_message = "chatID=1&message_type=Critical&message=PATIENT HAS FALLEN";
-  //     auto send_message_response = DHandler.http_post_send_message(ENDPOINT_SEND_MESSAGE,critical_message.c_str());
-  //     Serial.print("\nSend message response code:");
-  //     Serial.print(send_message_response);
-
-  //     // Delay for human purposes
-  //     delay(500);
-
-  //   }
-
-  //   Serial.print("\nButton [0]:");
-  //   Serial.print(digitalRead(button_0));
-
-  //   if(digitalRead(button_1) == HIGH)
-  //   {
-  //     // Inform patient of time via google home
-  //     GHome.dispatch(GlobalTime.current_time_string);
-
-  //     // Delay for human purposes
-  //     delay(500);
-  //   }
-
-  //   Serial.print("\nButton [1]:");
-  //   Serial.print(digitalRead(button_1));
   }
 }
 
 // **************************** DATA HANDLING MULTICORE OPERATIONS **************************** //
+
+void send_data_batch()
+{
+  auto timestamp = DHandler.calculate_current_time();
+  auto critical = HeartSensor.is_critical();
+  auto json = DHandler.create_json_data(4, timestamp, critical, prev_BPM, "Unknown");
+  auto response = DHandler.http_post_data_batch(ENDPOINT_SENSOR_UPDATE, json.c_str());
+  Serial.print("\nPost JSON data response:");
+  Serial.print(response);
+
+  // Send every minute
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
+}
 
 void retrieve_operation()
 {
@@ -349,6 +341,11 @@ void handle_data_core_0_sensors(void *parameters)
   GetSensors();
 }
 
+void handle_data_core_0_batch(void *parameters)
+{
+  send_data_batch();
+}
+
 void handle_data_core_1_threshold(void *parameters)
 {
   check_threshold_alerts();
@@ -405,6 +402,7 @@ void setup()
   // Assign tasks for core [0]
   xTaskCreatePinnedToCore(handle_data_core_0_API,"handle_data_core_0_API",105000,NULL,5,&API_TASK,0);
   xTaskCreatePinnedToCore(handle_data_core_0_sensors,"handle_data_core_0_sensors",10000,NULL,8,&DATA_TASK,0);
+  xTaskCreatePinnedToCore(handle_data_core_0_batch,"handle_data_core_0_batch",10000,NULL,5,&BATCH_TASK,0);
   
   // Assign tasks for core [1]
   xTaskCreatePinnedToCore(handle_data_core_1_threshold,"handle_data_core_1_threshold",10000,NULL,5,&THRESHOLD_TASK,1);

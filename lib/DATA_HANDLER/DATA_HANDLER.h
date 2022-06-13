@@ -16,16 +16,16 @@
 #define UPCOMING_ALERT_THRESHOLD 4
 
 // API ENDPOINTS
-#define ENDPOINT_LOGIN "http://test.cyberca.re/api/login"
-#define ENDPOINT_VALIDATE "http://test.cyberca.re/api/validate"
-#define ENDPOINT_SCHEDULE "http://test.cyberca.re/api/schedule/list"
-#define ENDPOINT_NEW_ALERT "http://test.cyberca.re/api/schedule/newItem"
-#define ENDPOINT_SENSOR_UPDATE "http://test.cyberca.re/api/sensors/update"
-#define ENDPOINT_SPECIFIC_ALERT_ID "http://test.cyberca.re/api/schedule/alert"
-#define ENDPOINT_DISMISS_ITEM "http://test.cyberca.re/api/schedule/dismissItem"
-#define ENDPOINT_DELETE_ALERT "http://test.cyberca.re/api/schedule/deleteItem"
-#define ENDPOINT_SEND_MESSAGE "http://test.cyberca.re/api/chat/sendMessage"
-#define ENDPOINT_GET_MESSAGES "http://test.cyberca.re/api/chat/getMessages"
+#define ENDPOINT_LOGIN "https://cyberca.re/api/login"
+#define ENDPOINT_VALIDATE "https://cyberca.re/api/validate"
+#define ENDPOINT_SCHEDULE "https://cyberca.re/api/schedule/list"
+#define ENDPOINT_NEW_ALERT "https://cyberca.re/api/schedule/newItem"
+#define ENDPOINT_SENSOR_UPDATE "https://cyberca.re/api/sensors/update"
+#define ENDPOINT_SPECIFIC_ALERT_ID "https://cyberca.re/api/schedule/alert"
+#define ENDPOINT_DISMISS_ITEM "https://cyberca.re/api/schedule/dismissItem"
+#define ENDPOINT_DELETE_ALERT "https://cyberca.re/api/schedule/deleteItem"
+#define ENDPOINT_SEND_MESSAGE "https://cyberca.re/api/chat/sendMessage"
+#define ENDPOINT_GET_MESSAGES "https://cyberca.re/api/chat/getMessages"
 
 struct alert
 {
@@ -51,6 +51,10 @@ class DATA_HANDLER
       int http_post_get_specific_alert(std::string url, std::string req_body);
       int http_post_get_messages(std::string url, std::string req_body);
       int http_post_send_message(std::string url, std::string req_body);
+      int http_post_data_batch(std::string url, std::string req_body);
+
+      // SENDING FUNCTIONS
+      std::string create_json_data(int device_id, unsigned long timestamp, bool critical_flag, double bpm, std::string activity);
 
       // HELPER FUNCTIONS
       int get_this_morning();
@@ -76,7 +80,6 @@ class DATA_HANDLER
       int http_post_new_alert(std::string url, std::string req_body);
       int http_post_delete_alert(std::string url, std::string req_body);
       int http_post_dismiss_item(std::string url, std::string req_body);
-      int http_post_data_batch(std::string url, std::string req_body);
 
       // PARSING FUNCTIONS
       void parse_credentials(std::string payload);
@@ -85,9 +88,6 @@ class DATA_HANDLER
       void get_message_id(std::string payload);
       void parse_message(std::string payload);
       void delete_map_element(const int key);
-
-      // SENDING FUNCTIONS
-      std::string create_json_data(int device_id, unsigned long timestamp, bool critical_flag, double bpm, std::string activity);
 
       // HELPER FUNCTIONS
       std::string get_welcome_message();

@@ -133,7 +133,7 @@ std::string DATA_HANDLER::initialise()
     std::string w_message = "Cybercare";
 
     // Assign credentials
-    credentials = "username=alice&password=inW0nderland";
+    credentials = "username=j.stokkink&password=led";
 
     // Perform POST request to login
     auto login_response = http_post_login(ENDPOINT_LOGIN,credentials);
