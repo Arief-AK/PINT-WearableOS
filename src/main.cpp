@@ -35,6 +35,10 @@ OLED_DISPLAY Display;
 // External dependencies
 GOOGLE_HOME GHome;
 
+// EXTERNAL BUTTONS
+const int button_0 = 13;
+const int button_1 = 15;
+
 // Global variables
 std::string SSID_NAME = "ETI1V.IC_DECO";
 std::string SSID_PASSWORD = "Superboys123";
@@ -137,6 +141,35 @@ void GetSensors()
       Serial.print("\nSend message response code:");
       Serial.print(send_message_response);
     }
+
+    // Check for button press
+  //   if(digitalRead(button_0) == HIGH)
+  //   {
+  //     // Send critical message
+  //     std::string critical_message = "chatID=1&message_type=Critical&message=PATIENT HAS FALLEN";
+  //     auto send_message_response = DHandler.http_post_send_message(ENDPOINT_SEND_MESSAGE,critical_message.c_str());
+  //     Serial.print("\nSend message response code:");
+  //     Serial.print(send_message_response);
+
+  //     // Delay for human purposes
+  //     delay(500);
+
+  //   }
+
+  //   Serial.print("\nButton [0]:");
+  //   Serial.print(digitalRead(button_0));
+
+  //   if(digitalRead(button_1) == HIGH)
+  //   {
+  //     // Inform patient of time via google home
+  //     GHome.dispatch(GlobalTime.current_time_string);
+
+  //     // Delay for human purposes
+  //     delay(500);
+  //   }
+
+  //   Serial.print("\nButton [1]:");
+  //   Serial.print(digitalRead(button_1));
   }
 }
 
@@ -339,6 +372,10 @@ void setup()
   // Setup WI-FI
   wifi_config();
 
+  // Setup buttons
+  // pinMode(button_0, INPUT_PULLUP);
+  // pinMode(button_1, INPUT_PULLUP);
+
   // Setup global system time
   GlobalTime.initialise();
 
@@ -368,6 +405,8 @@ void setup()
   // Assign tasks for core [0]
   xTaskCreatePinnedToCore(handle_data_core_0_API,"handle_data_core_0_API",105000,NULL,5,&API_TASK,0);
   xTaskCreatePinnedToCore(handle_data_core_0_sensors,"handle_data_core_0_sensors",10000,NULL,8,&DATA_TASK,0);
+  
+  // Assign tasks for core [1]
   xTaskCreatePinnedToCore(handle_data_core_1_threshold,"handle_data_core_1_threshold",10000,NULL,5,&THRESHOLD_TASK,1);
   xTaskCreatePinnedToCore(handle_data_core_1_printing,"handle_data_core_1_printing",10000,NULL,5,&DISPLAY_TASK,1);
   delay(500);
